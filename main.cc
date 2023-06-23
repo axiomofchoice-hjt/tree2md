@@ -40,7 +40,6 @@ std::vector<std::string> read() {
     std::string tmp;
     while (std::getline(f, tmp)) {
         content.emplace_back(std::move(tmp));
-        // printf("[%s]\n", content.back().c_str());
     }
     f.close();
     return content;
