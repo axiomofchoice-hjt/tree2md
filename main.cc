@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -39,13 +40,29 @@ void dfs(fs::path path, int depth, std::ofstream &f) {
 }
 
 std::vector<std::string> read() {
-    std::ifstream f("README.md");
+    std::ifstream f("README.md", std::istream::binary);
     std::vector<std::string> content;
     std::string tmp;
-    while (std::getline(f, tmp)) {
-        content.emplace_back(std::move(tmp));
+    while (true) {
+        int c = f.get();
+        if (c == -1) {
+            if (!tmp.empty()) {
+                content.emplace_back(std::move(tmp));
+            }
+            break;
+        } else if (c == '\r' || c == '\n') {
+            if (c == '\r') {
+                f.get();
+            }
+            content.emplace_back(std::move(tmp));
+        } else {
+            tmp.push_back(c);
+        }
     }
     f.close();
+    for (auto i : content) {
+        std::cout << i << std::endl;
+    }
     return content;
 }
 
@@ -60,7 +77,7 @@ std::string lstrip(const std::string &s) {
 int main() {
     auto content = read();
     int state = 0;
-    std::ofstream f("README.md");
+    std::ofstream f("README.md", std::ostream::binary);
     for (auto i : content) {
         if (state == 0) {
             if (i == "<!-- tree2md -->") {
