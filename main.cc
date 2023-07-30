@@ -2,11 +2,12 @@
 #include <fstream>
 #include <string>
 #include <vector>
+
 namespace fs = std::filesystem;
 
 std::string replace(std::string s, std::string a, std::string b) {
     while (true) {
-        int t = s.find(a);
+        size_t t = s.find(a);
         if (t == std::string::npos) {
             break;
         }
@@ -17,19 +18,22 @@ std::string replace(std::string s, std::string a, std::string b) {
 
 void dfs(fs::path path, int depth, std::ofstream &f) {
     for (fs::directory_entry i : fs::directory_iterator(path)) {
+        std::string filename =
+            replace(replace(i.path().filename().string(), " ", "_"), "\\", "/");
+        std::string path =
+            replace(replace(i.path().string(), " ", "%20"), "\\", "/");
         if (i.is_directory() && i.path().filename() != ".git") {
             for (int j = 0; j < depth; j++) {
                 f << "  ";
             }
-            f << "- " << replace(i.path().filename(), " ", "_") << '\n';
+            f << "- " << filename << '\n';
             dfs(i.path(), depth + 1, f);
         }
         if (i.is_regular_file() && i.path().extension() == ".md") {
             for (int j = 0; j < depth; j++) {
                 f << "  ";
             }
-            f << "- [" << replace(i.path().filename(), " ", "_") << "]("
-              << replace(i.path(), " ", "%20") << ")\n";
+            f << "- [" << filename << "](" << path << ")\n";
         }
     }
 }
