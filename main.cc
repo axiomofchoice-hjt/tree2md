@@ -3,10 +3,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <xstring>
 
 namespace fs = std::filesystem;
 
-std::string replace(std::string s, std::string a, std::string b) {
+std::u8string replace(std::u8string s, std::u8string a, std::u8string b) {
     while (true) {
         size_t t = s.find(a);
         if (t == std::string::npos) {
@@ -19,22 +20,24 @@ std::string replace(std::string s, std::string a, std::string b) {
 
 void dfs(fs::path path, int depth, std::ofstream &f) {
     for (fs::directory_entry i : fs::directory_iterator(path)) {
-        std::string filename =
-            replace(replace(i.path().filename().string(), " ", "_"), "\\", "/");
-        std::string path =
-            replace(replace(i.path().string(), " ", "%20"), "\\", "/");
+        std::u8string filename =
+            replace(replace(i.path().filename().u8string(), u8" ", u8"_"),
+                    u8"\\", u8"/");
+        std::u8string path = replace(
+            replace(i.path().u8string(), u8" ", u8"%20"), u8"\\", u8"/");
         if (i.is_directory() && i.path().filename() != ".git") {
             for (int j = 0; j < depth; j++) {
                 f << "  ";
             }
-            f << "- " << filename << '\n';
+            f << "- " << (char *)filename.data() << '\n';
             dfs(i.path(), depth + 1, f);
         }
         if (i.is_regular_file() && i.path().extension() == ".md") {
             for (int j = 0; j < depth; j++) {
                 f << "  ";
             }
-            f << "- [" << filename << "](" << path << ")\n";
+            f << "- [" << (char *)filename.data() << "](" << (char *)path.data()
+              << ")\n";
         }
     }
 }
@@ -60,9 +63,6 @@ std::vector<std::string> read() {
         }
     }
     f.close();
-    for (auto i : content) {
-        std::cout << i << std::endl;
-    }
     return content;
 }
 
