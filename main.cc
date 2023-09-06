@@ -17,7 +17,8 @@ std::u8string replace(std::u8string s, std::u8string a, std::u8string b) {
     return s;
 }
 
-void dfs(fs::path path, int depth, std::ofstream &f) {
+std::string dfs(fs::path path, int depth) {
+    std::string result;
     for (fs::directory_entry i : fs::directory_iterator(path)) {
         std::u8string filename =
             replace(replace(i.path().filename().u8string(), u8" ", u8"_"),
@@ -25,20 +26,24 @@ void dfs(fs::path path, int depth, std::ofstream &f) {
         std::u8string path = replace(
             replace(i.path().u8string(), u8" ", u8"%20"), u8"\\", u8"/");
         if (i.is_directory() && i.path().filename() != ".git") {
-            for (int j = 0; j < depth; j++) {
-                f << "  ";
+            std::string next = dfs(i.path(), depth + 1);
+            if (next != "") {
+                for (int j = 0; j < depth; j++) {
+                    result += "  ";
+                }
+                result += (std::string) "- " + (char *)filename.data() + '\n';
+                result += next;
             }
-            f << "- " << (char *)filename.data() << '\n';
-            dfs(i.path(), depth + 1, f);
         }
         if (i.is_regular_file() && i.path().extension() == ".md") {
             for (int j = 0; j < depth; j++) {
-                f << "  ";
+                result += "  ";
             }
-            f << "- [" << (char *)filename.data() << "](" << (char *)path.data()
-              << ")\n";
+            result += (std::string) "- [" + (char *)filename.data() + "](" +
+                      (char *)path.data() + ")\n";
         }
     }
+    return result;
 }
 
 std::vector<std::string> read() {
@@ -99,13 +104,13 @@ int main() {
         }
         if (state == 1) {
             f << '\n';
-            dfs(".", 0, f);
+            f << dfs(".", 0);
         }
     }
     if (state == 0) {
         f << "<!-- tree2md -->\n";
         f << '\n';
-        dfs(".", 0, f);
+        f << dfs(".", 0);
     }
     f.close();
     return 0;
