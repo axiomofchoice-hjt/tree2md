@@ -6,6 +6,5 @@ add_executable(${PROJECT_NAME} main.cc)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
-
 # find_package(fmt CONFIG REQUIRED)
 # target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
