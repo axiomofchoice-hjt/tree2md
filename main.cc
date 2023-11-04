@@ -21,8 +21,7 @@ std::string dfs(fs::path path, int depth) {
     std::string result;
     for (fs::directory_entry i : fs::directory_iterator(path)) {
         std::u8string filename =
-            replace(replace(i.path().filename().u8string(), u8" ", u8"_"),
-                    u8"\\", u8"/");
+            replace(i.path().filename().u8string(), u8"\\", u8"/");
         std::u8string path = replace(
             replace(i.path().u8string(), u8" ", u8"%20"), u8"\\", u8"/");
         if (i.is_directory() && i.path().filename() != ".git") {
@@ -72,7 +71,7 @@ std::vector<std::string> read() {
 
 std::string lstrip(const std::string &s) {
     int i = 0;
-    while (i < s.length() && s[i] == ' ') {
+    while (i < (int)s.length() && s[i] == ' ') {
         i++;
     }
     return s.substr(i, std::string::npos);
