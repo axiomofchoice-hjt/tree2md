@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -19,7 +20,10 @@ std::u8string replace(std::u8string s, std::u8string a, std::u8string b) {
 
 std::string dfs(fs::path path, int depth) {
     std::string result;
-    for (fs::directory_entry i : fs::directory_iterator(path)) {
+    auto it = fs::directory_iterator(path);
+    std::vector<fs::directory_entry> entries(fs::begin(it), fs::end(it));
+    std::sort(entries.begin(), entries.end());
+    for (const fs::directory_entry &i : entries) {
         std::u8string filename =
             replace(i.path().filename().u8string(), u8"\\", u8"/");
         std::u8string path = replace(
