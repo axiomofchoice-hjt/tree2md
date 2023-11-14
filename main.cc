@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -22,7 +23,20 @@ std::string dfs(fs::path path, int depth) {
     std::string result;
     auto it = fs::directory_iterator(path);
     std::vector<fs::directory_entry> entries(fs::begin(it), fs::end(it));
-    std::sort(entries.begin(), entries.end());
+    std::sort(entries.begin(), entries.end(),
+              [](const fs::directory_entry &a, const fs::directory_entry &b) {
+                  auto sa = a.path().filename().u8string();
+                  auto sb = b.path().filename().u8string();
+                  for (size_t i = 0; i <= std::min(sa.length(), sb.length());
+                       i++) {
+                      auto ca = tolower(sa[i]);
+                      auto cb = tolower(sb[i]);
+                      if (ca != cb) {
+                          return ca < cb;
+                      }
+                  }
+                  return sa > sb;
+              });
     for (const fs::directory_entry &i : entries) {
         std::u8string filename =
             replace(i.path().filename().u8string(), u8"\\", u8"/");
