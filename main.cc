@@ -42,7 +42,7 @@ std::string dfs(fs::path path, int depth) {
             replace(i.path().filename().u8string(), u8"\\", u8"/");
         std::u8string path = replace(
             replace(i.path().u8string(), u8" ", u8"%20"), u8"\\", u8"/");
-        if (i.is_directory() && i.path().filename() != ".git") {
+        if (i.is_directory() && i.path().filename().u8string()[0] != '.') {
             std::string next = dfs(i.path(), depth + 1);
             if (next != "") {
                 for (int j = 0; j < depth; j++) {
