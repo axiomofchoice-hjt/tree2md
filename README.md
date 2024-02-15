@@ -19,10 +19,11 @@ sudo cp ./tree2md /usr/bin
 
 <!-- tree2md -->
 
-- test
-  - [file.md](./test/file.md)
-  - dir1
-    - [file1.md](./test/dir1/file1.md)
-  - dir0
-    - [file0.md](./test/dir0/file0.md)
 - [README.md](./README.md)
+- test
+  - [README.md](./test/README.md)
+  - [README_STANDARD.md](./test/README_STANDARD.md)
+  - test_dir0
+    - [test_file0.md](./test/test_dir0/test_file0.md)
+  - test_dir1
+    - [test_file1.md](./test/test_dir1/test_file1.md)
