@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "# test
 " > README.md
 tree2md
