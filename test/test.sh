@@ -2,8 +2,7 @@
 echo "# test
 " > README.md
 tree2md
-diff STANDARD.md README.md > /dev/null
-if [[ $? != 0 ]]; then
+if ! diff STANDARD.md README.md > /dev/null; then
     echo test 0 failed
     cat README.md
     exit
@@ -13,8 +12,7 @@ echo "# test
 
 <!-- tree2md -->" > README.md
 tree2md
-diff STANDARD.md README.md > /dev/null
-if [[ $? != 0 ]]; then
+if ! diff STANDARD.md README.md > /dev/null; then
     echo test 1 failed
     cat README.md
     exit
@@ -28,8 +26,7 @@ echo "# test
   - [B.md](./B.md)
     - [C.md](./C.md)" > README.md
 tree2md
-diff STANDARD.md README.md > /dev/null
-if [[ $? != 0 ]]; then
+if ! diff STANDARD.md README.md > /dev/null; then
     echo test 2 failed
     cat README.md
     exit
